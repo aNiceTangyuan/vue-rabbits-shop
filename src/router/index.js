@@ -13,7 +13,7 @@ const router = createRouter({
           component: () => import('@/view/Home/index.vue'),
         },
         {
-          path: 'category',
+          path: 'category/:id',
           name: 'Category',
           component: () => import('@/view/Category/index.vue'),
         },
@@ -24,7 +24,6 @@ const router = createRouter({
       name: 'Login',
       component: () => import('@/view/Login/index.vue'),
     },
-
   ],
 })
 
