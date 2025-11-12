@@ -1,14 +1,14 @@
 <template>
   <nav class="fixed-nav" :class="{ 'is-visible': isVisible }">
     <div class="fixed-nav-container">
+      <router-link to="/" class="fixed-nav-item">首页</router-link>
       <router-link
         v-for="item in categoryStore.categoryList"
         :key="item.id"
         :to="`/category/${item.id}`"
         class="fixed-nav-item"
       >
-        <img v-if="item.picture" :src="item.picture" :alt="item.name" class="fixed-category-img" />
-        <span class="fixed-category-name">{{ item.name }}</span>
+        {{ item.name }}
       </router-link>
     </div>
   </nav>
@@ -23,7 +23,8 @@ const isVisible = ref(false)
 
 // 处理滚动事件
 const handleScroll = () => {
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+  const scrollTop =
+    window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
   isVisible.value = scrollTop > 78
 }
 
@@ -60,48 +61,46 @@ onUnmounted(() => {
 }
 
 .fixed-nav-container {
-  max-width: 1240px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  padding: 0.75rem 2rem;
+  gap: 30px;
+  padding: 0 20px;
   height: 60px;
 }
 
 .fixed-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
   text-decoration: none;
   color: #333;
-  transition: all 0.2s;
-  padding: 0.5rem;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 16px;
   border-radius: 4px;
+  transition: all 0.3s;
+  white-space: nowrap;
+  position: relative;
 }
 
 .fixed-nav-item:hover {
-  background-color: #f5f5f5;
-  color: #2563eb;
+  color: #27ba9b;
+  background: #f0faf8;
 }
 
 .fixed-nav-item.router-link-active {
-  color: #2563eb;
+  color: #27ba9b;
 }
 
-.fixed-category-img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  border-radius: 4px;
-}
-
-.fixed-category-name {
-  font-size: 0.85rem;
-  font-weight: 500;
-  white-space: nowrap;
+.fixed-nav-item.router-link-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 2px;
+  background: #27ba9b;
+  border-radius: 2px;
 }
 </style>
-

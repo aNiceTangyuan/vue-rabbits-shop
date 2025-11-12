@@ -6,6 +6,24 @@
       <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
     </el-breadcrumb>
 
+    <!-- 轮播图 -->
+    <AppBanner distribution-site="2" height="400px" class="category-banner" />
+
+    <!-- 子分类导航 -->
+    <div v-if="categoryData.children && categoryData.children.length" class="sub-category-nav">
+      <router-link
+        v-for="subCat in categoryData.children"
+        :key="subCat.id"
+        :to="`/category/sub/${categoryData.id}?subCatId=${subCat.id}&parentName=${categoryData.name}`"
+        class="sub-nav-item"
+      >
+        <div class="sub-nav-image">
+          <img v-lazyload="subCat.picture" :alt="subCat.name" />
+        </div>
+        <span class="sub-nav-name">{{ subCat.name }}</span>
+      </router-link>
+    </div>
+
     <!-- 分类头部 -->
     <div class="category-header">
       <h2 class="category-title">{{ categoryData.name }}</h2>
@@ -17,7 +35,10 @@
 
       <div class="sub-category-header">
         <h3 class="sub-category-title">{{ subCategory.name }}</h3>
-        <router-link :to="`/category/sub/${subCategory.id}`" class="view-more">
+        <router-link
+          :to="`/category/sub/${categoryData.id}?subCatId=${subCategory.id}&parentName=${categoryData.name}`"
+          class="view-more"
+        >
           查看全部 >
         </router-link>
       </div>
@@ -48,6 +69,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getCategoryDetail } from '@/api/category'
+import AppBanner from '@/components/AppBanner.vue'
 
 const route = useRoute()
 const categoryData = ref(null)
@@ -88,6 +110,62 @@ watch(
 .breadcrumb {
   padding: 15px 0;
   font-size: 14px;
+}
+
+.category-banner {
+  margin-bottom: 30px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sub-category-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  padding: 30px 0;
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 30px;
+}
+
+.sub-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.sub-nav-item:hover {
+  border-color: #27ba9b;
+  box-shadow: 0 2px 8px rgba(39, 186, 155, 0.2);
+  transform: translateY(-2px);
+}
+
+.sub-nav-image {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.sub-nav-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sub-nav-name {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .category-header {

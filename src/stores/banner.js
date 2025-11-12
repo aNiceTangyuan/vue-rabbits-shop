@@ -5,9 +5,9 @@ import { getBannerList } from '@/api/home'
 export const useBannerStore = defineStore('banner', () => {
   const bannerList = ref([])
 
-  const getBanners = async () => {
+  const getBanners = async (distributionSite = '1') => {
     try {
-      const res = await getBannerList()
+      const res = await getBannerList(distributionSite)
       if (res.code === '1' && res.result) {
         bannerList.value = res.result
       }

@@ -3,7 +3,7 @@
     <LayoutNav />
     <LayoutHeader />
     <Layoutfixed />
-    
+
     <main class="layout-main">
       <router-view />
     </main>
@@ -12,8 +12,8 @@
 </template>
 
 <script setup>
-import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutNav from './components/LayoutNav.vue'
+import LayoutHeader from './components/LayoutHeader.vue'
 import LayoutFooter from './components/LayoutFooter.vue'
 import Layoutfixed from './components/Layoutfixed.vue'
 </script>

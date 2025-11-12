@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  // 路由滚动行为定制
+  scrollBehavior() {
+    return { top: 0 }
+  },
   routes: [
     {
       path: '/',
@@ -16,6 +20,16 @@ const router = createRouter({
           path: 'category/:id',
           name: 'Category',
           component: () => import('@/view/Category/index.vue'),
+        },
+        {
+          path: 'category/sub/:id',
+          name: 'SubCategory',
+          component: () => import('@/view/SubCategory/index.vue'),
+        },
+        {
+          path: 'product/:id',
+          name: 'Detail',
+          component: () => import('@/view/Detail/index.vue'),
         },
       ],
     },

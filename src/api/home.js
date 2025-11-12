@@ -2,12 +2,14 @@ import http from '@/utils/http'
 
 /**
  * 获取轮播图数据
+ * @param {string} distributionSite - 广告区域展示位置（1为首页，2为分类商品页）
  * @returns {Promise}
  */
-export const getBannerList = () => {
+export const getBannerList = (distributionSite = '1') => {
   return http({
     method: 'get',
     url: '/home/banner',
+    params: { distributionSite },
   })
 }
 
