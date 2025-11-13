@@ -8,9 +8,9 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   // GitHub Pages 部署配置
-  base: process.env.NODE_ENV === 'production' ? '/vue-rabbits-shop/' : '/',
+  base: mode === 'production' ? '/vue-rabbits-shop/' : '/',
   plugins: [
     vue(),
     vueDevTools(),
@@ -26,4 +26,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-})
+}))
