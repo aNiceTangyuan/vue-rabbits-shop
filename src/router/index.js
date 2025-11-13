@@ -31,6 +31,45 @@ const router = createRouter({
           name: 'Detail',
           component: () => import('@/view/Detail/index.vue'),
         },
+        {
+          path: 'detail/:id',
+          component: () => import('@/view/Detail/index.vue'),
+        },
+        {
+          path: 'cart',
+          name: 'Cart',
+          component: () => import('@/view/Cart/index.vue'),
+        },
+        {
+          path: 'member',
+          name: 'Member',
+          component: () => import('@/view/Member/index.vue'),
+        },
+        {
+          path: 'orders',
+          name: 'Orders',
+          component: () => import('@/view/Orders/index.vue'),
+        },
+        {
+          path: 'checkout',
+          name: 'Checkout',
+          component: () => import('@/view/Checkout/index.vue'),
+        },
+        {
+          path: 'order/:id',
+          name: 'Order',
+          component: () => import('@/view/Order/index.vue'),
+        },
+        {
+          path: 'pay/:id',
+          name: 'Pay',
+          component: () => import('@/view/Pay/index.vue'),
+        },
+        {
+          path: 'pay/result',
+          name: 'PayResult',
+          component: () => import('@/view/Pay/result.vue'),
+        },
       ],
     },
     {

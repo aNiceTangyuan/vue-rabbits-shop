@@ -184,11 +184,17 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { getGoodsDetail } from '@/api/home'
+import { useCartStore } from '@/stores/cart'
+import { useUserStore } from '@/stores/user'
 import GoodsItem from '@/view/Home/components/GoodsItem.vue'
 
 const route = useRoute()
+const router = useRouter()
+const cartStore = useCartStore()
+const userStore = useUserStore()
 const loading = ref(false)
 const goodsDetail = ref(null)
 const currentImage = ref('')
@@ -206,9 +212,14 @@ const fetchGoodsDetail = async () => {
   try {
     const res = await getGoodsDetail(route.params.id)
     if (res.code === '1' && res.result) {
-      console.log(res)
+      console.log('商品详情数据:', res.result)
       goodsDetail.value = res.result
       currentImage.value = res.result.mainPictures[0]
+
+      // 打印skus信息，查看数据结构
+      if (res.result.skus) {
+        console.log('SKU列表:', res.result.skus)
+      }
     }
   } catch (error) {
     console.error('获取商品详情失败:', error)
@@ -217,23 +228,104 @@ const fetchGoodsDetail = async () => {
   }
 }
 
+// 根据选中的规格获取对应的skuId
+const getSkuId = () => {
+  // 如果没有规格，直接使用商品ID
+  if (!goodsDetail.value.specs || goodsDetail.value.specs.length === 0) {
+    return goodsDetail.value.id
+  }
+
+  // 如果有skus列表，根据选中的规格匹配对应的sku
+  if (goodsDetail.value.skus && goodsDetail.value.skus.length > 0) {
+    // 将选中的规格转换为字符串用于匹配
+    const selectedSpecsStr = Object.values(selectedSpecs.value).sort().join(' ')
+    console.log('选中的规格字符串:', selectedSpecsStr)
+
+    // 查找匹配的sku
+    const matchedSku = goodsDetail.value.skus.find((sku) => {
+      // 如果sku有specs字段，进行匹配
+      if (sku.specs) {
+        const skuSpecsStr = sku.specs
+          .map((s) => s.valueName)
+          .sort()
+          .join(' ')
+        console.log('SKU规格字符串:', skuSpecsStr, 'SKU ID:', sku.id)
+        return skuSpecsStr === selectedSpecsStr
+      }
+      return false
+    })
+
+    if (matchedSku) {
+      console.log('找到匹配的SKU:', matchedSku)
+      return matchedSku.id
+    }
+  }
+
+  // 如果都没有，返回商品ID
+  console.log('未找到匹配的SKU，使用商品ID')
+  return goodsDetail.value.id
+}
+
 // 选择规格
 const selectSpec = (specName, valueName) => {
   selectedSpecs.value[specName] = valueName
+  console.log('选择规格:', { specName, valueName, allSpecs: selectedSpecs.value })
 }
 
 // 加入购物车
-const handleAddCart = () => {
-  console.log('加入购物车', {
-    goods: goodsDetail.value,
-    specs: selectedSpecs.value,
-    quantity: quantity.value,
+const handleAddCart = async () => {
+  console.log('点击加入购物车按钮')
+  console.log('当前商品信息:', goodsDetail.value)
+  console.log('选中的规格:', selectedSpecs.value)
+  console.log('购买数量:', quantity.value)
+
+  // 检查是否登录
+  if (!userStore.isLogin()) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+
+  // 检查是否选择了所有必需的规格
+  if (goodsDetail.value.specs && goodsDetail.value.specs.length > 0) {
+    const allSpecsSelected = goodsDetail.value.specs.every((spec) => selectedSpecs.value[spec.name])
+    if (!allSpecsSelected) {
+      ElMessage.warning('请选择完整的商品规格')
+      return
+    }
+  }
+
+  // 获取skuId
+  const skuId = getSkuId()
+  console.log('获取到的skuId:', skuId)
+
+  if (!skuId) {
+    ElMessage.warning('商品信息不完整，无法加入购物车')
+    console.error('无法获取skuId')
+    return
+  }
+
+  console.log('准备调用addCart，参数:', {
+    skuId: skuId,
+    count: quantity.value,
   })
-  // TODO: 实现加入购物车逻辑
+
+  // 调用购物车store的addCart方法
+  await cartStore.addCart({
+    skuId: skuId,
+    count: quantity.value,
+  })
 }
 
 // 立即购买
 const handleBuyNow = () => {
+  // 检查是否登录
+  if (!userStore.isLogin()) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+
   console.log('立即购买', {
     goods: goodsDetail.value,
     specs: selectedSpecs.value,

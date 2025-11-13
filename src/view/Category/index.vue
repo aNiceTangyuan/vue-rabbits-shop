@@ -79,6 +79,7 @@ const fetchCategoryData = async () => {
     const res = await getCategoryDetail(route.params.id)
     if (res.code === '1' && res.result) {
       categoryData.value = res.result
+      console.log(categoryData.value)
     }
   } catch (error) {
     console.error('获取分类数据失败:', error)
@@ -119,8 +120,9 @@ watch(
 }
 
 .sub-category-nav {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 15px;
   padding: 30px 0;
   border-bottom: 2px solid #f0f0f0;
@@ -137,6 +139,8 @@ watch(
   background: #fff;
   border: 2px solid #f0f0f0;
   transition: all 0.3s;
+  flex: 0 0 auto;
+  min-width: 120px;
 }
 
 .sub-nav-item:hover {

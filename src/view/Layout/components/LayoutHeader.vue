@@ -24,18 +24,50 @@
           {{ item.name }}
         </router-link>
       </nav>
+
+      <!-- 右侧功能区 -->
+      <div class="header-actions">
+        <!-- 搜索图标 -->
+        <div class="search-icon-box">
+          <el-icon :size="24" class="action-icon">
+            <Search />
+          </el-icon>
+        </div>
+
+        <!-- 购物车 -->
+        <router-link to="/cart" class="cart-link">
+          <el-badge :value="cartCount" :hidden="cartCount === 0" :max="99">
+            <el-icon :size="24" class="cart-icon">
+              <ShoppingCart />
+            </el-icon>
+          </el-badge>
+        </router-link>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+
+import { Search, ShoppingCart } from '@element-plus/icons-vue'
 import { useCategoryStore } from '@/stores/category'
+import { useCartStore } from '@/stores/cart'
+import { useUserStore } from '@/stores/user'
 
 const categoryStore = useCategoryStore()
+const cartStore = useCartStore()
+const userStore = useUserStore()
+
+// 购物车数量
+const cartCount = computed(() => cartStore.cartCount)
 
 onMounted(() => {
   categoryStore.getCategoryList()
+  // 如果用户已登录，获取购物车数据
+  if (userStore.isLogin()) {
+    cartStore.getCart()
+  }
 })
 </script>
 
@@ -103,5 +135,60 @@ onMounted(() => {
 .nav-item.router-link-active {
   color: #27ba9b;
   background: #f0faf8;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search-icon-box {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.search-icon-box:hover {
+  background: #f0faf8;
+}
+
+.action-icon {
+  color: #333;
+  transition: color 0.3s;
+}
+
+.search-icon-box:hover .action-icon {
+  color: #27ba9b;
+}
+
+.cart-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.cart-link:hover {
+  background: #f0faf8;
+}
+
+.cart-icon {
+  color: #333;
+  transition: color 0.3s;
+}
+
+.cart-link:hover .cart-icon {
+  color: #27ba9b;
+}
+
+.cart-link :deep(.el-badge__content) {
+  background-color: #27ba9b;
+  border: none;
 }
 </style>
