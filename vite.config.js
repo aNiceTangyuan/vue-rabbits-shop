@@ -10,7 +10,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig({
   // GitHub Pages 部署配置
-  base: process.env.NODE_ENV === 'production' ? '/vue-rabbits/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '/vue-rabbits-shop/' : '/',
   plugins: [
     vue(),
     vueDevTools(),
