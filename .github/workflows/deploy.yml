@@ -35,13 +35,10 @@ jobs:
           cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm run build
-
-      - name: Add SPA 404 fallback
-        run: cp dist/index.html dist/404.html
 
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
