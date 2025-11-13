@@ -1,3 +1,5 @@
+/* eslint-env node */
+import process from 'node:process'
 import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
@@ -10,7 +12,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig({
   // GitHub Pages 部署配置
-  base: process.env.NODE_ENV === 'production' ? '/vue-rabbits/' : '/',
+  // 仓库名：vue-rabbits-shop，生产环境下需以仓库名作为 base
+  base: process.env.NODE_ENV === 'production' ? '/vue-rabbits-shop/' : '/',
   plugins: [
     vue(),
     vueDevTools(),

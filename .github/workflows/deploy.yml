@@ -5,9 +5,8 @@ on:
     branches: [ main ]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  # Need write to push to gh-pages branch
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -19,8 +18,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # Match project's engines (Node 20+)
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -28,7 +28,6 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        # Use pnpm install (without --frozen-lockfile) to avoid failing when lockfile pattern isn't detected
         run: pnpm install
 
       - name: Build
@@ -40,7 +39,6 @@ jobs:
           publish_dir: ./dist
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-name: Deploy to GitHub Pages
 
 on:
   push:
